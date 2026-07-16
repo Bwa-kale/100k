@@ -2,245 +2,227 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>ROAD TO 100K — VAULT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vault Milestones">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000000">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23000'/%3E%3Ccircle cx='90' cy='90' r='62' fill='none' stroke='url(%23g)' stroke-width='10'/%3E%3Ctext x='90' y='103' font-family='Georgia' font-size='58' font-weight='700' fill='%23d4af37' text-anchor='middle'%3E%24%3C/text%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='180' y2='180'%3E%3Cstop offset='0' stop-color='%23d4af37'/%3E%3Cstop offset='.5' stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%2339ff9c'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Ctext x='50' y='68' font-size='50' fill='%23d4af37' text-anchor='middle'%3E%24%3C/text%3E%3C/svg%3E">
+<title>Vault Milestones</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --gold:#d4af37;
-    --violet:#8b5cf6;
-    --neon:#39ff9c;
-    --black:#000000;
-    --glass:rgba(255,255,255,0.04);
+    --black:#000;
     --glass-border:rgba(255,255,255,0.09);
   }
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{
     margin:0;min-height:100%;
     background:var(--black);
-    display:flex;align-items:flex-start;justify-content:center;
     font-family:'Inter',sans-serif;
     color:#eee;
-    padding:24px;
-    overflow-x:hidden;
+    overscroll-behavior-y:contain;
   }
-  #stars{
-    position:fixed;inset:0;
-    pointer-events:none;
+  #stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+
+  .app{
+    position:relative;
+    z-index:1;
+    max-width:420px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:env(safe-area-inset-top,20px) 0 env(safe-area-inset-bottom,20px);
   }
-  body::before{
-    content:'';
-    position:fixed;inset:0;
-    background:
-      radial-gradient(circle at 18% 12%, rgba(139,92,246,0.14), transparent 42%),
-      radial-gradient(circle at 88% 85%, rgba(57,255,156,0.10), transparent 48%),
-      radial-gradient(circle at 50% 100%, rgba(212,175,55,0.06), transparent 55%);
-    pointer-events:none;
+
+  .app-header{
+    text-align:center;
+    padding:6px 20px 10px;
+  }
+  .app-title{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.28em;
+    color:#666;
+    text-transform:uppercase;
+  }
+
+  /* ---------- carousel ---------- */
+  .carousel{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding:6px 0 4px;
+  }
+  .carousel::-webkit-scrollbar{display:none;}
+  .slide{
+    flex:0 0 100%;
+    scroll-snap-align:center;
+    display:flex;
+    justify-content:center;
+    padding:0 18px;
   }
 
   .card{
     position:relative;
-    width:380px;
-    max-width:100%;
+    width:100%;
+    max-width:360px;
     min-width:0;
-    padding:28px 24px 20px;
-    background:linear-gradient(165deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+    padding:24px 22px 20px;
+    border-radius:24px;
     border:1px solid var(--glass-border);
-    border-radius:22px;
     backdrop-filter:blur(20px);
     -webkit-backdrop-filter:blur(20px);
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.02),
-      0 30px 80px rgba(0,0,0,0.7),
-      inset 0 1px 0 rgba(255,255,255,0.06);
     overflow:hidden;
-  }
-  .card::after{
-    content:'';
-    position:absolute;top:-50%;left:-25%;
-    width:70%;height:220%;
-    background:linear-gradient(120deg, transparent, rgba(212,175,55,0.06), transparent);
-    transform:rotate(20deg);
-    pointer-events:none;
-    animation:sheen 7s ease-in-out infinite;
-  }
-  @keyframes sheen{
-    0%,100%{transform:rotate(20deg) translateX(0);}
-    50%{transform:rotate(20deg) translateX(30px);}
+    box-shadow:0 30px 70px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
-  .scorpion{
-    display:block;
-    width:30px;height:30px;
-    margin:0 auto 10px;
-    opacity:.6;
-    filter:drop-shadow(0 0 4px rgba(139,92,246,0.6));
-  }
-
+  .glyph{display:block;width:26px;height:26px;margin:0 auto 8px;opacity:.65;}
   .eyebrow{
     font-family:'JetBrains Mono',monospace;
-    font-size:10px;
-    letter-spacing:.22em;
-    color:var(--violet);
+    font-size:9.5px;
+    letter-spacing:.2em;
     text-transform:uppercase;
-    display:flex;justify-content:center;align-items:center;
-    gap:14px;
-    margin-bottom:14px;
+    display:flex;justify-content:center;align-items:center;gap:10px;
+    margin-bottom:10px;
   }
-  .eyebrow .status{
-    color:var(--neon);
-    font-size:9px;
-  }
-  .eyebrow span.dot{
-    width:6px;height:6px;border-radius:50%;
-    background:var(--neon);
-    box-shadow:0 0 8px var(--neon);
-    display:inline-block;margin-right:6px;
-  }
-
-  h1{
+  .eyebrow .dot{width:5px;height:5px;border-radius:50%;display:inline-block;}
+  h2{
     font-family:'Orbitron',sans-serif;
     font-weight:900;
-    font-size:20px;
+    font-size:17px;
     letter-spacing:.03em;
     text-align:center;
-    margin:0 0 18px;
-    background:linear-gradient(90deg,#fff, var(--gold) 60%, var(--violet));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
+    margin:0 0 16px;
   }
 
-  .ring-wrap{
+  .viz-wrap{
     position:relative;
-    width:min(226px, 74%);
-    aspect-ratio:1/1;
-    margin:8px auto 20px;
+    margin:6px auto 16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
-  svg{transform:rotate(-90deg); overflow:visible; display:block; width:100%; height:100%;}
-  .ring-bg{fill:none;stroke:rgba(255,255,255,0.055);stroke-width:10;}
-  .ring-fg{
-    fill:none;stroke-width:10;stroke-linecap:round;
-    stroke:url(#ringGrad);
-    filter:drop-shadow(0 0 8px rgba(57,255,156,0.5));
-    transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);
-  }
-  .milestone{
-    fill:#000;
-    stroke:rgba(255,255,255,0.35);
-    stroke-width:1.5;
-    r:2.6;
-  }
-  .milestone.hit{
-    fill:var(--gold);
-    stroke:var(--gold);
-    filter:drop-shadow(0 0 4px var(--gold));
-  }
-  .comet{
-    fill:#fff;
-    filter:drop-shadow(0 0 8px var(--neon)) drop-shadow(0 0 16px var(--violet));
-    transition:all .8s cubic-bezier(.4,0,.2,1);
-  }
-  .ring-center{
-    position:absolute;inset:0;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-  }
-  .hero-amount{
+  .hero{
     font-family:'Orbitron',sans-serif;
     font-weight:900;
-    font-size:30px;
     letter-spacing:-.01em;
-    background:linear-gradient(90deg,#fff 20%, var(--gold) 65%, var(--neon));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-    text-shadow:0 0 30px rgba(212,175,55,0.25);
+    white-space:nowrap;
+    padding:0 4px;
   }
-  .pct{
+  .pct-line{
     font-family:'JetBrains Mono',monospace;
     font-weight:600;
-    font-size:14px;
-    color:var(--violet);
-    letter-spacing:.05em;
-    margin-top:6px;
-  }
-  .target-label{
-    font-family:'JetBrains Mono',monospace;
-    font-size:9.5px;
-    letter-spacing:.18em;
-    color:#666;
-    margin-top:8px;
-    text-transform:uppercase;
+    font-size:12.5px;
+    letter-spacing:.04em;
+    margin-top:4px;
   }
 
   .stats{
     display:grid;
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    gap:10px;
-    margin-bottom:18px;
+    gap:8px;
+    margin-top:14px;
   }
   .stat{
-    position:relative;
     background:rgba(255,255,255,0.03);
     border:1px solid var(--glass-border);
-    border-left:2px solid var(--gold);
     border-radius:10px;
-    padding:11px 10px;
+    padding:9px 10px;
     min-width:0;
   }
-  .stat:nth-child(2){border-left-color:var(--violet);}
   .stat-label{
     font-family:'JetBrains Mono',monospace;
-    font-size:8.5px;
+    font-size:8px;
     letter-spacing:.14em;
     color:#777;
     text-transform:uppercase;
-    margin-bottom:5px;
+    margin-bottom:4px;
   }
   .stat-value{
     font-family:'JetBrains Mono',monospace;
     font-weight:700;
-    font-size:14px;
-    color:var(--neon);
+    font-size:12.5px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    letter-spacing:-.02em;
-  }
-  .stat-value.violet{color:var(--violet);}
-  .stat-value.gold{color:var(--gold);}
-
-  .divider{
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--glass-border), transparent);
-    margin:4px 0 16px;
   }
 
+  .card-footer{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid var(--glass-border);
+    font-family:'JetBrains Mono',monospace;
+    font-size:8.5px;
+    letter-spacing:.14em;
+    color:#555;
+    text-transform:uppercase;
+    text-align:center;
+  }
+
+  /* ---------- dots ---------- */
+  .dots{
+    display:flex;justify-content:center;gap:8px;
+    padding:2px 0 14px;
+  }
+  .dotnav{
+    width:7px;height:7px;border-radius:50%;
+    background:rgba(255,255,255,0.18);
+    border:none;padding:0;
+    transition:all .25s;
+    cursor:pointer;
+  }
+  .dotnav.active{width:20px;border-radius:4px;background:var(--active-color, #d4af37);}
+
+  /* ---------- shared input panel ---------- */
+  .panel{
+    margin:auto 18px 0;
+    max-width:360px;
+    width:calc(100% - 36px);
+    margin-left:auto;margin-right:auto;
+    background:rgba(255,255,255,0.035);
+    border:1px solid var(--glass-border);
+    border-radius:18px;
+    padding:16px 18px 14px;
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+  .panel-title{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;
+    letter-spacing:.18em;
+    color:#777;
+    text-transform:uppercase;
+    margin-bottom:12px;
+    display:flex;justify-content:space-between;
+  }
+  .panel-title .live{color:#39ff9c;}
   .input-row{
     display:flex;align-items:center;gap:10px;
     margin-bottom:10px;
   }
+  .input-row:last-of-type{margin-bottom:6px;}
   .input-row label{
     font-family:'JetBrains Mono',monospace;
     font-size:9.5px;
-    letter-spacing:.14em;
+    letter-spacing:.1em;
     color:#888;
     text-transform:uppercase;
     white-space:nowrap;
-    width:92px;
+    width:88px;
   }
-  .input-row .field{
-    position:relative;
-    flex:1;
-  }
+  .input-row .field{position:relative;flex:1;min-width:0;}
   .input-row .field::before{
     content:'$';
-    position:absolute;
-    left:11px;top:50%;transform:translateY(-50%);
-    font-family:'JetBrains Mono',monospace;
-    font-size:13px;
-    color:var(--gold);
+    position:absolute;left:11px;top:50%;transform:translateY(-50%);
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:#d4af37;
     pointer-events:none;
   }
   .input-row input{
@@ -253,170 +235,325 @@
     font-size:13px;
     padding:9px 10px 9px 22px;
     outline:none;
-    transition:border-color .2s, box-shadow .2s;
   }
-  .input-row input:focus{
-    border-color:var(--gold);
-    box-shadow:0 0 0 3px rgba(212,175,55,0.12);
-  }
-
+  .input-row input:focus{border-color:#d4af37; box-shadow:0 0 0 3px rgba(212,175,55,0.12);}
+  .input-row input::-webkit-outer-spin-button,
+  .input-row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .input-row input[type=number]{-moz-appearance:textfield; appearance:textfield;}
   .save-note{
     font-family:'JetBrains Mono',monospace;
-    font-size:9px;
-    color:#555;
-    text-align:right;
-    margin-top:-4px;
-    margin-bottom:12px;
-    letter-spacing:.05em;
-    min-height:12px;
+    font-size:8.5px;color:#555;text-align:right;
+    min-height:11px;letter-spacing:.05em;
   }
 
-  .milestones-title{
-    font-family:'JetBrains Mono',monospace;
-    font-size:9.5px;
-    letter-spacing:.16em;
-    color:#777;
-    text-transform:uppercase;
-    margin:0 0 10px;
-    display:flex;justify-content:space-between;align-items:center;
+  /* ============ CARD 1 — IGNITION — $100K ============ */
+  .card--ignition{
+    background:linear-gradient(165deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
   }
-  .milestones-list{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    gap:8px;
-    margin-bottom:6px;
+  .card--ignition .eyebrow{color:#8b5cf6;}
+  .card--ignition .eyebrow .dot{background:#39ff9c;box-shadow:0 0 8px #39ff9c;}
+  .card--ignition h2{
+    background:linear-gradient(90deg,#fff, #d4af37 60%, #8b5cf6);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
   }
-  .m-row{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:6px;
-    min-width:0;
-    background:rgba(255,255,255,0.025);
+  .card--ignition .hero{
+    background:linear-gradient(90deg,#fff 20%, #d4af37 65%, #39ff9c);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 30px rgba(212,175,55,0.25);
+  }
+  .card--ignition .pct-line{color:#8b5cf6;}
+  .card--ignition .stat{border-left:2px solid #d4af37;}
+  .card--ignition .stat:nth-child(2){border-left-color:#8b5cf6;}
+  .card--ignition .stat-value{color:#39ff9c;}
+  .card--ignition .stat:nth-child(2) .stat-value{color:#8b5cf6;}
+  .ring-svg{transform:rotate(-90deg);}
+  .ring-bg{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:9;}
+  .ring-fg{fill:none;stroke-width:9;stroke-linecap:round;stroke:url(#ignGrad);
+    filter:drop-shadow(0 0 7px rgba(57,255,156,0.5));
+    transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);}
+  .comet{fill:#fff;filter:drop-shadow(0 0 7px #39ff9c) drop-shadow(0 0 14px #8b5cf6);
+    transition:all .8s cubic-bezier(.4,0,.2,1);}
+
+  /* ============ CARD 2 — MOMENTUM — $250K ============ */
+  .card--momentum{
+    background:linear-gradient(165deg, rgba(45,212,191,0.06), rgba(255,255,255,0.015));
+  }
+  .card--momentum .eyebrow{color:#2dd4bf;}
+  .card--momentum .eyebrow .dot{background:#f59e0b;box-shadow:0 0 8px #f59e0b;}
+  .card--momentum h2{
+    background:linear-gradient(90deg,#fff, #2dd4bf 55%, #f59e0b);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .card--momentum .hero{
+    background:linear-gradient(90deg,#fff 15%, #2dd4bf 60%, #f59e0b);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 26px rgba(45,212,191,0.25);
+  }
+  .card--momentum .pct-line{color:#f59e0b;}
+  .card--momentum .stat{border-left:2px solid #2dd4bf;}
+  .card--momentum .stat:nth-child(2){border-left-color:#f59e0b;}
+  .card--momentum .stat-value{color:#2dd4bf;}
+  .card--momentum .stat:nth-child(2) .stat-value{color:#f59e0b;}
+  .capsule-outer{
+    width:100%;height:34px;
+    border-radius:17px;
+    background:rgba(255,255,255,0.05);
     border:1px solid var(--glass-border);
-    border-radius:8px;
-    padding:7px 10px;
+    position:relative;overflow:hidden;
   }
-  .m-row.reached{
-    border-color:rgba(57,255,156,0.3);
-    background:rgba(57,255,156,0.04);
+  .capsule-fill{
+    position:absolute;top:0;left:0;bottom:0;width:0%;
+    background:linear-gradient(90deg,#0d9488,#2dd4bf 60%,#f59e0b);
+    border-radius:17px;
+    transition:width .8s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 0 14px rgba(45,212,191,0.5);
   }
-  .m-amt{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:700;
-    font-size:11.5px;
-    color:#ddd;
-    flex-shrink:0;
+  .capsule-ticks{position:absolute;inset:0;display:flex;}
+  .capsule-ticks span{flex:1;border-right:1px solid rgba(0,0,0,0.35);}
+  .capsule-ticks span:last-child{border-right:none;}
+
+  /* ============ CARD 3 — ASCENSION — $500K ============ */
+  .card--ascension{
+    background:linear-gradient(165deg, rgba(244,63,94,0.06), rgba(255,255,255,0.015));
   }
-  .m-row.reached .m-amt{color:var(--neon);}
-  .m-date{
-    font-family:'JetBrains Mono',monospace;
-    font-size:9.5px;
-    color:var(--gold);
-    white-space:nowrap;
+  .card--ascension .eyebrow{color:#a855f7;}
+  .card--ascension .eyebrow .dot{background:#f43f5e;box-shadow:0 0 8px #f43f5e;}
+  .card--ascension h2{
+    background:linear-gradient(90deg,#fff, #f43f5e 55%, #a855f7);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .card--ascension .hero{
+    background:linear-gradient(90deg,#fff 15%, #f43f5e 60%, #a855f7);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 26px rgba(244,63,94,0.25);
+  }
+  .card--ascension .pct-line{color:#a855f7;}
+  .card--ascension .stat{border-left:2px solid #f43f5e;}
+  .card--ascension .stat:nth-child(2){border-left-color:#a855f7;}
+  .card--ascension .stat-value{color:#f43f5e;}
+  .card--ascension .stat:nth-child(2) .stat-value{color:#a855f7;}
+  .gauge-svg{overflow:visible;}
+  .gauge-bg{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:9;}
+  .gauge-fg{fill:none;stroke-width:9;stroke-linecap:round;stroke:url(#ascGrad);
+    filter:drop-shadow(0 0 7px rgba(244,63,94,0.5));
+    transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);}
+  .needle-dot{fill:#fff;filter:drop-shadow(0 0 7px #f43f5e) drop-shadow(0 0 14px #a855f7);
+    transition:all .8s cubic-bezier(.4,0,.2,1);}
+
+  /* ============ CARD 4 — APEX — $1,000,000 ============ */
+  .card--apex{
+    background:linear-gradient(165deg, rgba(229,228,226,0.06), rgba(255,255,255,0.015));
+  }
+  .card--apex .eyebrow{color:#e5e4e2;}
+  .card--apex .eyebrow .dot{background:#d4af37;box-shadow:0 0 8px #d4af37;}
+  .card--apex h2{
+    background:linear-gradient(90deg,#fff, #e5e4e2 45%, #d4af37);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .card--apex .hero{
+    background:linear-gradient(90deg,#fff 10%, #e5e4e2 55%, #d4af37);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 30px rgba(212,175,55,0.3);
+  }
+  .card--apex .pct-line{color:#e5e4e2;}
+  .card--apex .stat{border-left:2px solid #e5e4e2;}
+  .card--apex .stat:nth-child(2){border-left-color:#d4af37;}
+  .card--apex .stat-value{color:#e5e4e2;}
+  .card--apex .stat:nth-child(2) .stat-value{color:#d4af37;}
+  .ingot-wrap{
+    display:flex;align-items:flex-end;justify-content:center;
+    gap:5px;height:120px;width:100%;
+  }
+  .ingot-bar{
+    position:relative;
+    width:26px;height:100%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--glass-border);
+    border-radius:4px;
     overflow:hidden;
-    text-overflow:ellipsis;
-    min-width:0;
   }
-  .m-row.reached .m-date{color:var(--neon);}
-  .m-date.pending{color:#555;}
+  .ingot-bar .fill{
+    position:absolute;left:0;right:0;bottom:0;height:0%;
+    background:linear-gradient(180deg,#fff,#e5e4e2 40%,#d4af37);
+    transition:height .8s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 0 12px rgba(212,175,55,0.5);
+  }
+  .facet{
+    position:absolute;top:-30px;right:-20px;
+    width:70px;height:70px;
+    background:conic-gradient(from 45deg, rgba(229,228,226,0.12), transparent 30%, rgba(212,175,55,0.1), transparent 70%);
+    clip-path:polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    pointer-events:none;
+  }
 
-  .assumption-note{
-    font-family:'JetBrains Mono',monospace;
-    font-size:8.5px;
-    color:#4a4a4a;
-    text-align:center;
-    letter-spacing:.04em;
-    margin:10px 0 16px;
-    line-height:1.5;
+  @media (prefers-reduced-motion: reduce){
+    .ring-fg,.comet,.capsule-fill,.gauge-fg,.needle-dot,.ingot-bar .fill{transition:none;}
   }
-
-  .footer{
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px solid var(--glass-border);
-    font-family:'JetBrains Mono',monospace;
-    font-size:9px;
-    letter-spacing:.16em;
-    color:#555;
-    text-align:center;
-    text-transform:uppercase;
-    display:flex;justify-content:space-between;
-  }
-  .footer span:last-child{color:var(--gold);}
 </style>
 </head>
 <body>
 
 <canvas id="stars"></canvas>
 
-<div class="card">
-  <svg class="scorpion" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 8c3 0 5 2 5 5s2 6 5 6 4-2 4-5 2-6 6-6c3 0 5 2 6 5" stroke="url(#scorpGrad)" stroke-width="1.4" stroke-linecap="round"/>
-    <path d="M30 13l3-2 1 3.5-3.5 1.5z" fill="url(#scorpGrad)"/>
-    <circle cx="4" cy="8" r="1.6" fill="var(--gold)"/>
-    <defs>
-      <linearGradient id="scorpGrad" x1="0" y1="0" x2="40" y2="20" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#d4af37"/><stop offset="1" stop-color="#8b5cf6"/>
-      </linearGradient>
-    </defs>
-  </svg>
-
-  <div class="eyebrow"><span><span class="dot"></span>SCORPIO FLOW · VAULT</span><span class="status" id="statusTxt">LIVE</span></div>
-  <h1>ROAD TO $100,000</h1>
-
-  <div class="ring-wrap">
-    <svg width="226" height="226" viewBox="0 0 226 226">
-      <defs>
-        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#d4af37"/>
-          <stop offset="55%" stop-color="#8b5cf6"/>
-          <stop offset="100%" stop-color="#39ff9c"/>
-        </linearGradient>
-      </defs>
-      <circle class="ring-bg" cx="113" cy="113" r="98"/>
-      <circle class="ring-fg" id="ringFg" cx="113" cy="113" r="98"
-        stroke-dasharray="615.75" stroke-dashoffset="615.75"/>
-      <g id="milestones"></g>
-      <circle class="comet" id="comet" cx="113" cy="15" r="5"/>
-    </svg>
-    <div class="ring-center">
-      <div class="hero-amount" id="curVal">$0</div>
-      <div class="pct"><span id="pctVal">0.0</span>% funded</div>
-      <div class="target-label">Target · $100,000</div>
-    </div>
+<div class="app">
+  <div class="app-header">
+    <div class="app-title">SCORPIO FLOW · VAULT MILESTONES</div>
   </div>
 
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-label">Remaining</div>
-      <div class="stat-value gold" id="remVal">$100,000</div>
+  <div class="carousel" id="carousel">
+
+    <!-- CARD 1: IGNITION — $100K -->
+    <div class="slide">
+      <div class="card card--ignition" data-target="100000" data-key="ign">
+        <svg class="glyph" viewBox="0 0 40 40" fill="none">
+          <path d="M4 8c3 0 5 2 5 5s2 6 5 6 4-2 4-5 2-6 6-6c3 0 5 2 6 5" stroke="url(#scorpGrad)" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M30 13l3-2 1 3.5-3.5 1.5z" fill="url(#scorpGrad)"/>
+          <circle cx="4" cy="8" r="1.8" fill="#d4af37"/>
+          <defs><linearGradient id="scorpGrad" x1="0" y1="0" x2="40" y2="20" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#d4af37"/><stop offset="1" stop-color="#8b5cf6"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="eyebrow"><span class="dot"></span>IGNITION PHASE</div>
+        <h2>ROAD TO $100,000</h2>
+        <div class="viz-wrap" style="width:180px;height:180px;">
+          <svg class="ring-svg" width="180" height="180" viewBox="0 0 180 180">
+            <defs><linearGradient id="ignGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d4af37"/><stop offset="55%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#39ff9c"/>
+            </linearGradient></defs>
+            <circle class="ring-bg" cx="90" cy="90" r="78"/>
+            <circle class="ring-fg" id="ring-ign" cx="90" cy="90" r="78" stroke-dasharray="490.09" stroke-dashoffset="490.09"/>
+            <circle class="comet" id="comet-ign" cx="90" cy="12" r="4.5"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div class="hero" id="hero-ign" style="font-size:26px;">$0</div>
+            <div class="pct-line"><span id="pct-ign">0.0</span>% funded</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="rem-ign">$100,000</div></div>
+          <div class="stat"><div class="stat-label">Est. Arrival</div><div class="stat-value" id="date-ign">—</div></div>
+        </div>
+        <div class="card-footer">FIRST LIGHT · BASE CAMP</div>
+      </div>
     </div>
-    <div class="stat">
-      <div class="stat-label">Next Milestone</div>
-      <div class="stat-value violet" id="nextMilestone">$25,000</div>
+
+    <!-- CARD 2: MOMENTUM — $250K -->
+    <div class="slide">
+      <div class="card card--momentum" data-target="250000" data-key="mom">
+        <svg class="glyph" viewBox="0 0 40 40" fill="none">
+          <path d="M6 30c8 4 20 4 28-6-6 2-14 2-19-3-4-4-4-10 1-14-8 1-13 8-13 15 0 3 1 6 3 8z" stroke="url(#dragGrad)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs><linearGradient id="dragGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#2dd4bf"/><stop offset="1" stop-color="#f59e0b"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="eyebrow"><span class="dot"></span>MOMENTUM PHASE</div>
+        <h2>ROAD TO $250,000</h2>
+        <div class="viz-wrap" style="width:100%;flex-direction:column;align-items:stretch;">
+          <div style="text-align:center;margin-bottom:14px;">
+            <div class="hero" id="hero-mom" style="font-size:28px;">$0</div>
+            <div class="pct-line"><span id="pct-mom">0.0</span>% funded</div>
+          </div>
+          <div class="capsule-outer">
+            <div class="capsule-fill" id="fill-mom"></div>
+            <div class="capsule-ticks"><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="rem-mom">$250,000</div></div>
+          <div class="stat"><div class="stat-label">Est. Arrival</div><div class="stat-value" id="date-mom">—</div></div>
+        </div>
+        <div class="card-footer">SUSTAINED THRUST · CRUISING ALTITUDE</div>
+      </div>
     </div>
+
+    <!-- CARD 3: ASCENSION — $500K -->
+    <div class="slide">
+      <div class="card card--ascension" data-target="500000" data-key="asc">
+        <svg class="glyph" viewBox="0 0 40 40" fill="none">
+          <path d="M20 4c4 6 4 12 0 18M20 4c-4 6-4 12 0 18M20 22l0 14M14 30l6-4 6 4" stroke="url(#flameGrad)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs><linearGradient id="flameGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#f43f5e"/><stop offset="1" stop-color="#a855f7"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="eyebrow"><span class="dot"></span>ASCENSION PHASE</div>
+        <h2>ROAD TO $500,000</h2>
+        <div class="viz-wrap" style="width:200px;height:120px;">
+          <svg class="gauge-svg" width="200" height="120" viewBox="0 0 200 120">
+            <defs><linearGradient id="ascGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#f43f5e"/>
+            </linearGradient></defs>
+            <path class="gauge-bg" d="M14 106 A86 86 0 0 1 186 106"/>
+            <path class="gauge-fg" id="gauge-asc" d="M14 106 A86 86 0 0 1 186 106" stroke-dasharray="270.2" stroke-dashoffset="270.2"/>
+            <circle class="needle-dot" id="dot-asc" cx="14" cy="106" r="5"/>
+          </svg>
+          <div style="position:absolute;bottom:-4px;left:0;right:0;text-align:center;">
+            <div class="hero" id="hero-asc" style="font-size:24px;">$0</div>
+            <div class="pct-line"><span id="pct-asc">0.0</span>% funded</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="rem-asc">$500,000</div></div>
+          <div class="stat"><div class="stat-label">Est. Arrival</div><div class="stat-value" id="date-asc">—</div></div>
+        </div>
+        <div class="card-footer">BREAKING ATMOSPHERE</div>
+      </div>
+    </div>
+
+    <!-- CARD 4: APEX — $1,000,000 -->
+    <div class="slide">
+      <div class="card card--apex" data-target="1000000" data-key="apex">
+        <div class="facet"></div>
+        <svg class="glyph" viewBox="0 0 40 40" fill="none">
+          <path d="M20 4l10 10-10 22L10 14z" stroke="url(#diaGrad)" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+          <path d="M10 14h20M15 14l5 22 5-22M20 4l-5 10M20 4l5 10" stroke="url(#diaGrad)" stroke-width="1"/>
+          <defs><linearGradient id="diaGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#e5e4e2"/><stop offset="1" stop-color="#d4af37"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="eyebrow"><span class="dot"></span>APEX PHASE</div>
+        <h2>ROAD TO $1,000,000</h2>
+        <div class="viz-wrap" style="width:100%;flex-direction:column;">
+          <div class="ingot-wrap">
+            <div class="ingot-bar"><div class="fill" id="ing1"></div></div>
+            <div class="ingot-bar"><div class="fill" id="ing2"></div></div>
+            <div class="ingot-bar"><div class="fill" id="ing3"></div></div>
+            <div class="ingot-bar"><div class="fill" id="ing4"></div></div>
+            <div class="ingot-bar"><div class="fill" id="ing5"></div></div>
+          </div>
+          <div style="text-align:center;margin-top:14px;">
+            <div class="hero" id="hero-apex" style="font-size:24px;">$0</div>
+            <div class="pct-line"><span id="pct-apex">0.0</span>% funded</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="rem-apex">$1,000,000</div></div>
+          <div class="stat"><div class="stat-label">Est. Arrival</div><div class="stat-value" id="date-apex">—</div></div>
+        </div>
+        <div class="card-footer">ORBIT ACHIEVED · LEGACY MODE</div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="divider"></div>
-
-  <div class="input-row">
-    <label for="curInput">Net Worth</label>
-    <div class="field">
-      <input type="number" id="curInput" placeholder="42,500" min="0" step="100">
-    </div>
+  <div class="dots" id="dots">
+    <button class="dotnav active" style="--active-color:#d4af37" data-i="0" aria-label="Ignition, $100K"></button>
+    <button class="dotnav" style="--active-color:#2dd4bf" data-i="1" aria-label="Momentum, $250K"></button>
+    <button class="dotnav" style="--active-color:#f43f5e" data-i="2" aria-label="Ascension, $500K"></button>
+    <button class="dotnav" style="--active-color:#e5e4e2" data-i="3" aria-label="Apex, $1,000,000"></button>
   </div>
-  <div class="input-row">
-    <label for="monthlyInput">Monthly Add</label>
-    <div class="field">
-      <input type="number" id="monthlyInput" placeholder="800" min="0" step="50">
+
+  <div class="panel">
+    <div class="panel-title"><span>Your Numbers</span><span class="live">LIVE</span></div>
+    <div class="input-row">
+      <label for="curInput">Net Worth</label>
+      <div class="field"><input type="text" inputmode="decimal" id="curInput" placeholder="42,500"></div>
     </div>
+    <div class="input-row">
+      <label for="monthlyInput">Monthly Add</label>
+      <div class="field"><input type="text" inputmode="decimal" id="monthlyInput" placeholder="800"></div>
+    </div>
+    <div class="save-note" id="saveNote">&nbsp;</div>
   </div>
-  <div class="save-note" id="saveNote">&nbsp;</div>
-
-  <div class="milestones-title"><span>Milestone Dates</span></div>
-  <div class="milestones-list" id="milestonesList"></div>
-  <div class="assumption-note" id="assumptionNote">Projected from flat monthly contribution — no market growth assumed</div>
-
-  <div class="footer"><span>MAXIMUS · FIRE @ 55</span><span id="dragonTag">SCORPIO DRAGON</span></div>
 </div>
 
 <script>
@@ -424,204 +561,217 @@
   const canvas = document.getElementById('stars');
   const ctx = canvas.getContext('2d');
   let stars = [];
-  function resize(){
+  function resizeCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    stars = Array.from({length:90}, ()=>({
-      x: Math.random()*canvas.width,
-      y: Math.random()*canvas.height,
-      r: Math.random()*1.2 + 0.2,
-      phase: Math.random()*Math.PI*2,
-      speed: Math.random()*0.015 + 0.005
+    stars = Array.from({length:80}, ()=>({
+      x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+      r: Math.random()*1.1+0.2, phase: Math.random()*Math.PI*2, speed: Math.random()*0.015+0.005
     }));
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
   function drawStars(t){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     for(const s of stars){
-      const a = 0.25 + 0.55 * Math.abs(Math.sin(t*s.speed + s.phase));
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(255,255,255,${a})`;
-      ctx.fill();
+      const a = 0.2 + 0.5*Math.abs(Math.sin(t*s.speed+s.phase));
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fill();
     }
     requestAnimationFrame(drawStars);
   }
   requestAnimationFrame(drawStars);
 
-  /* ---------- storage adapter ----------
-     window.storage only exists inside Claude.ai artifacts. Once this file
-     is self-hosted (e.g. GitHub Pages), it's undefined — fall back to
-     localStorage so saving still works there. */
+  /* ---------- storage adapter (Claude.ai artifact OR self-hosted) ---------- */
   const store = {
     async get(key){
-      if(window.storage){
-        try{ return await window.storage.get(key); }
-        catch(e){ return null; }
-      }
+      if(window.storage){ try{ return await window.storage.get(key); }catch(e){ return null; } }
       const raw = localStorage.getItem(key);
       return raw !== null ? { value: raw } : null;
     },
     async set(key, value){
-      if(window.storage){
-        return window.storage.set(key, value);
-      }
+      if(window.storage){ return window.storage.set(key, value); }
       localStorage.setItem(key, value);
       return { value };
     }
   };
 
-  /* ---------- ring / progress ---------- */
-  const R = 98;
-  const CX = 113, CY = 113;
-  const CIRC = 2 * Math.PI * R;
-  const ringFg = document.getElementById('ringFg');
-  const comet = document.getElementById('comet');
-  const milestonesG = document.getElementById('milestones');
-  const pctVal = document.getElementById('pctVal');
-  const curVal = document.getElementById('curVal');
-  const remVal = document.getElementById('remVal');
-  const nextMilestone = document.getElementById('nextMilestone');
-  const curInput = document.getElementById('curInput');
-  const monthlyInput = document.getElementById('monthlyInput');
-  const saveNote = document.getElementById('saveNote');
-  const statusTxt = document.getElementById('statusTxt');
-  const milestonesList = document.getElementById('milestonesList');
-
-  ringFg.setAttribute('stroke-dasharray', CIRC.toFixed(2));
-
-  const MILESTONE_PCTS = [10,20,30,40,50,60,70,80,90];
-  MILESTONE_PCTS.forEach(p=>{
-    const angle = (p/100) * 2 * Math.PI - Math.PI/2;
-    const x = CX + R * Math.cos(angle);
-    const y = CY + R * Math.sin(angle);
-    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    c.setAttribute('cx', x); c.setAttribute('cy', y);
-    c.setAttribute('r', 2.6);
-    c.setAttribute('class','milestone');
-    c.setAttribute('data-pct', p);
-    milestonesG.appendChild(c);
-  });
-
-  function fmt(n){
-    return '$' + Math.round(n).toLocaleString('en-US');
-  }
-  function fmtK(n){
-    return '$' + Math.round(n/1000) + 'K';
-  }
+  /* ---------- formatting ---------- */
+  function fmt(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
   const MONTH_FMT = new Intl.DateTimeFormat('en-US', { month:'short', year:'numeric' });
 
-  function renderMilestoneDates(current, monthly){
-    milestonesList.innerHTML = '';
-    const now = new Date();
-    for(let target = 10000; target <= 100000; target += 10000){
-      const row = document.createElement('div');
-      row.className = 'm-row';
-      const amt = document.createElement('span');
-      amt.className = 'm-amt';
-      amt.textContent = fmtK(target);
-      const date = document.createElement('span');
-      date.className = 'm-date';
-
-      if(current >= target){
-        row.classList.add('reached');
-        date.textContent = 'reached';
-      } else if(monthly > 0){
-        const monthsNeeded = Math.ceil((target - current) / monthly);
-        const projected = new Date(now.getFullYear(), now.getMonth() + monthsNeeded, 1);
-        date.textContent = MONTH_FMT.format(projected);
-      } else {
-        date.textContent = 'add $/mo';
-        date.classList.add('pending');
-      }
-      row.appendChild(amt);
-      row.appendChild(date);
-      milestonesList.appendChild(row);
+  function fitHero(el, container, maxPct){
+    const available = container.clientWidth * maxPct;
+    let size = parseInt(el.dataset.baseSize || getComputedStyle(el).fontSize, 10);
+    if(!el.dataset.baseSize) el.dataset.baseSize = size;
+    size = parseInt(el.dataset.baseSize, 10);
+    el.style.fontSize = size + 'px';
+    while(el.scrollWidth > available && size > 12){
+      size -= 1;
+      el.style.fontSize = size + 'px';
     }
   }
 
-  function render(current, monthly){
-    const target = 100000;
-    const pct = Math.max(0, Math.min(100, (current / target) * 100));
-    const offset = CIRC - (pct / 100) * CIRC;
-    ringFg.setAttribute('stroke-dashoffset', offset.toFixed(2));
+  /* ---------- card configs ---------- */
+  const RING_R = 78, RING_CIRC = 2*Math.PI*RING_R;
+  const GAUGE_LEN = 270.2; // measured arc length of the semicircle path
 
-    const angle = (pct/100) * 2 * Math.PI - Math.PI/2;
-    comet.setAttribute('cx', (CX + R * Math.cos(angle)).toFixed(2));
-    comet.setAttribute('cy', (CY + R * Math.sin(angle)).toFixed(2));
+  const cards = {
+    ign:  { target: 100000 },
+    mom:  { target: 250000 },
+    asc:  { target: 500000 },
+    apex: { target: 1000000 }
+  };
 
-    document.querySelectorAll('.milestone').forEach(m=>{
-      const mp = parseFloat(m.getAttribute('data-pct'));
-      m.classList.toggle('hit', pct >= mp);
+  function renderIgnition(current){
+    const pct = Math.max(0, Math.min(100, current/100000*100));
+    const offset = RING_CIRC - (pct/100)*RING_CIRC;
+    document.getElementById('ring-ign').setAttribute('stroke-dashoffset', offset.toFixed(2));
+    const angle = (pct/100)*2*Math.PI - Math.PI/2;
+    const cx = 90 + RING_R*Math.cos(angle), cy = 90 + RING_R*Math.sin(angle);
+    document.getElementById('comet-ign').setAttribute('cx', cx.toFixed(2));
+    document.getElementById('comet-ign').setAttribute('cy', cy.toFixed(2));
+    document.getElementById('pct-ign').textContent = pct.toFixed(1);
+  }
+
+  function renderMomentum(current){
+    const pct = Math.max(0, Math.min(100, current/250000*100));
+    document.getElementById('fill-mom').style.width = pct + '%';
+    document.getElementById('pct-mom').textContent = pct.toFixed(1);
+  }
+
+  function renderAscension(current){
+    const pct = Math.max(0, Math.min(100, current/500000*100));
+    const offset = GAUGE_LEN - (pct/100)*GAUGE_LEN;
+    document.getElementById('gauge-asc').setAttribute('stroke-dashoffset', offset.toFixed(2));
+    const angle = Math.PI - (pct/100)*Math.PI; // 180deg -> 0deg sweep
+    const dx = 100 + 86*Math.cos(angle), dy = 106 - 86*Math.sin(angle);
+    document.getElementById('dot-asc').setAttribute('cx', dx.toFixed(2));
+    document.getElementById('dot-asc').setAttribute('cy', dy.toFixed(2));
+    document.getElementById('pct-asc').textContent = pct.toFixed(1);
+  }
+
+  function renderApex(current){
+    const pct = Math.max(0, Math.min(100, current/1000000*100));
+    const bars = [20,40,60,80,100];
+    bars.forEach((threshold, i)=>{
+      const barPct = Math.max(0, Math.min(100, (pct/threshold)*100));
+      document.getElementById('ing'+(i+1)).style.height = barPct + '%';
     });
+    document.getElementById('pct-apex').textContent = pct.toFixed(1);
+  }
 
-    pctVal.textContent = pct.toFixed(1);
-    curVal.textContent = fmt(current);
-    remVal.textContent = fmt(Math.max(0, target - current));
+  const RENDERERS = { ign: renderIgnition, mom: renderMomentum, asc: renderAscension, apex: renderApex };
 
-    const nextM = MILESTONE_PCTS.find(m => pct < m);
-    nextMilestone.textContent = nextM ? fmt(nextM/100*target) : fmt(target);
+  function renderCard(key, current, monthly){
+    const target = cards[key].target;
+    const pct = Math.max(0, Math.min(100, current/target*100));
+    const heroEl = document.getElementById('hero-'+key);
+    heroEl.textContent = fmt(current);
+    fitHero(heroEl, heroEl.closest('.viz-wrap'), key === 'ign' ? 0.62 : 0.7);
 
-    renderMilestoneDates(current, monthly);
+    document.getElementById('rem-'+key).textContent = fmt(Math.max(0, target - current));
+
+    const dateEl = document.getElementById('date-'+key);
+    if(current >= target){
+      dateEl.textContent = 'reached';
+    } else if(monthly > 0){
+      const monthsNeeded = Math.ceil((target - current) / monthly);
+      const now = new Date();
+      const projected = new Date(now.getFullYear(), now.getMonth() + monthsNeeded, 1);
+      dateEl.textContent = MONTH_FMT.format(projected);
+    } else {
+      dateEl.textContent = 'add $/mo';
+    }
+
+    RENDERERS[key](current);
+  }
+
+  function renderAll(current, monthly){
+    Object.keys(cards).forEach(key => renderCard(key, current, monthly));
+  }
+
+  /* ---------- inputs: parse, sync, persist ---------- */
+  const curInput = document.getElementById('curInput');
+  const monthlyInput = document.getElementById('monthlyInput');
+  const saveNote = document.getElementById('saveNote');
+
+  function parseNum(str){
+    const cleaned = (str || '').replace(/[^\d.]/g, '');
+    const n = parseFloat(cleaned);
+    return isNaN(n) ? 0 : n;
   }
 
   let saveTimer;
   async function persist(value, monthly){
     saveNote.textContent = 'saving…';
     try{
-      await store.set('road-to-100k:net-worth', JSON.stringify({ value, monthly, updated: Date.now() }));
+      await store.set('vault-milestones:inputs', JSON.stringify({ value, monthly, updated: Date.now() }));
       saveNote.textContent = 'saved';
-      statusTxt.textContent = 'LIVE';
     }catch(e){
       saveNote.textContent = 'storage unavailable — session only';
     }
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(()=>{ saveNote.textContent = ''; }, 1800);
+    saveTimer = setTimeout(()=>{ saveNote.textContent = ''; }, 1600);
   }
 
-  function currentValues(){
-    return {
-      v: parseFloat(curInput.value) || 0,
-      m: parseFloat(monthlyInput.value) || 0
-    };
+  let lastV = null, lastM = null;
+  function syncFromFields(){
+    const v = parseNum(curInput.value);
+    const m = parseNum(monthlyInput.value);
+    if(v !== lastV || m !== lastM){
+      lastV = v; lastM = m;
+      renderAll(v, m);
+      persist(v, m);
+    }
   }
+  ['input','change','keyup'].forEach(evt=>{
+    curInput.addEventListener(evt, syncFromFields);
+    monthlyInput.addEventListener(evt, syncFromFields);
+  });
+  setInterval(syncFromFields, 400); // fallback for browsers with unreliable input events
 
-  function onEdit(){
-    const { v, m } = currentValues();
-    render(v, m);
-    persist(v, m);
-  }
+  /* ---------- carousel: dots + swipe sync ---------- */
+  const carousel = document.getElementById('carousel');
+  const dotEls = Array.from(document.querySelectorAll('.dotnav'));
+  dotEls.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = parseInt(btn.dataset.i, 10);
+      carousel.scrollTo({ left: i * carousel.clientWidth, behavior:'smooth' });
+    });
+  });
+  let scrollTimer;
+  carousel.addEventListener('scroll', ()=>{
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(()=>{
+      const i = Math.round(carousel.scrollLeft / carousel.clientWidth);
+      dotEls.forEach((d, idx)=> d.classList.toggle('active', idx === i));
+    }, 80);
+  });
 
-  curInput.addEventListener('input', onEdit);
-  curInput.addEventListener('change', onEdit);
-  monthlyInput.addEventListener('input', onEdit);
-  monthlyInput.addEventListener('change', onEdit);
-
+  /* ---------- init ---------- */
   async function init(){
     let stored = { value: 0, monthly: 0 };
     try{
-      const res = await store.get('road-to-100k:net-worth');
+      const res = await store.get('vault-milestones:inputs');
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         stored.value = parsed.value || 0;
         stored.monthly = parsed.monthly || 0;
       }
-    }catch(e){ /* no saved value yet */ }
+    }catch(e){ /* nothing saved yet */ }
 
-    // Mobile browsers can silently restore typed values into inputs on
-    // reload without firing an 'input' event — reconcile against that.
-    const autoV = curInput.value !== '' ? parseFloat(curInput.value) : NaN;
-    const autoM = monthlyInput.value !== '' ? parseFloat(monthlyInput.value) : NaN;
-    const finalV = !isNaN(autoV) ? autoV : stored.value;
-    const finalM = !isNaN(autoM) ? autoM : stored.monthly;
+    const autoV = curInput.value !== '' ? parseNum(curInput.value) : NaN;
+    const autoM = monthlyInput.value !== '' ? parseNum(monthlyInput.value) : NaN;
+    const finalV = !isNaN(autoV) && curInput.value !== '' ? autoV : stored.value;
+    const finalM = !isNaN(autoM) && monthlyInput.value !== '' ? autoM : stored.monthly;
 
     curInput.value = finalV || '';
     monthlyInput.value = finalM || '';
-    render(finalV, finalM);
+    lastV = finalV; lastM = finalM;
+    renderAll(finalV, finalM);
     if(finalV !== stored.value || finalM !== stored.monthly) persist(finalV, finalM);
   }
-  window.addEventListener('pageshow', init);
   init();
 </script>
 </body>
