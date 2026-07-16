@@ -69,21 +69,26 @@
   }
 
   .scorpion{
-    position:absolute;
-    top:14px;right:18px;
-    width:34px;height:34px;
-    opacity:.55;
+    display:block;
+    width:30px;height:30px;
+    margin:0 auto 10px;
+    opacity:.6;
     filter:drop-shadow(0 0 4px rgba(139,92,246,0.6));
   }
 
   .eyebrow{
     font-family:'JetBrains Mono',monospace;
-    font-size:10.5px;
+    font-size:10px;
     letter-spacing:.22em;
     color:var(--violet);
     text-transform:uppercase;
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:6px;
+    display:flex;justify-content:center;align-items:center;
+    gap:14px;
+    margin-bottom:14px;
+  }
+  .eyebrow .status{
+    color:var(--neon);
+    font-size:9px;
   }
   .eyebrow span.dot{
     width:6px;height:6px;border-radius:50%;
@@ -97,7 +102,8 @@
     font-weight:900;
     font-size:20px;
     letter-spacing:.03em;
-    margin:0 0 20px;
+    text-align:center;
+    margin:0 0 18px;
     background:linear-gradient(90deg,#fff, var(--gold) 60%, var(--violet));
     -webkit-background-clip:text;
     background-clip:text;
@@ -106,10 +112,11 @@
 
   .ring-wrap{
     position:relative;
-    width:226px;height:226px;
-    margin:4px auto 20px;
+    width:min(226px, 74%);
+    aspect-ratio:1/1;
+    margin:8px auto 20px;
   }
-  svg{transform:rotate(-90deg); overflow:visible;}
+  svg{transform:rotate(-90deg); overflow:visible; display:block; width:100%; height:100%;}
   .ring-bg{fill:none;stroke:rgba(255,255,255,0.055);stroke-width:10;}
   .ring-fg{
     fill:none;stroke-width:10;stroke-linecap:round;
@@ -209,7 +216,7 @@
 
   .input-row{
     display:flex;align-items:center;gap:10px;
-    margin-bottom:6px;
+    margin-bottom:10px;
   }
   .input-row label{
     font-family:'JetBrains Mono',monospace;
@@ -218,6 +225,7 @@
     color:#888;
     text-transform:uppercase;
     white-space:nowrap;
+    width:92px;
   }
   .input-row .field{
     position:relative;
@@ -254,9 +262,63 @@
     font-size:9px;
     color:#555;
     text-align:right;
-    margin-top:5px;
+    margin-top:-4px;
+    margin-bottom:12px;
     letter-spacing:.05em;
     min-height:12px;
+  }
+
+  .milestones-title{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.16em;
+    color:#777;
+    text-transform:uppercase;
+    margin:0 0 10px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .milestones-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .m-row{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:6px;
+    background:rgba(255,255,255,0.025);
+    border:1px solid var(--glass-border);
+    border-radius:8px;
+    padding:7px 10px;
+  }
+  .m-row.reached{
+    border-color:rgba(57,255,156,0.3);
+    background:rgba(57,255,156,0.04);
+  }
+  .m-amt{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:11.5px;
+    color:#ddd;
+  }
+  .m-row.reached .m-amt{color:var(--neon);}
+  .m-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--gold);
+    white-space:nowrap;
+  }
+  .m-row.reached .m-date{color:var(--neon);}
+  .m-date.pending{color:#555;}
+
+  .assumption-note{
+    font-family:'JetBrains Mono',monospace;
+    font-size:8.5px;
+    color:#4a4a4a;
+    text-align:center;
+    letter-spacing:.04em;
+    margin:10px 0 16px;
+    line-height:1.5;
   }
 
   .footer{
@@ -290,7 +352,7 @@
     </defs>
   </svg>
 
-  <div class="eyebrow"><span><span class="dot"></span>SCORPIO FLOW · VAULT</span><span id="statusTxt">LIVE</span></div>
+  <div class="eyebrow"><span><span class="dot"></span>SCORPIO FLOW · VAULT</span><span class="status" id="statusTxt">LIVE</span></div>
   <h1>ROAD TO $100,000</h1>
 
   <div class="ring-wrap">
@@ -334,7 +396,17 @@
       <input type="number" id="curInput" placeholder="42,500" min="0" step="100">
     </div>
   </div>
+  <div class="input-row">
+    <label for="monthlyInput">Monthly Add</label>
+    <div class="field">
+      <input type="number" id="monthlyInput" placeholder="800" min="0" step="50">
+    </div>
+  </div>
   <div class="save-note" id="saveNote">&nbsp;</div>
+
+  <div class="milestones-title"><span>Milestone Dates</span></div>
+  <div class="milestones-list" id="milestonesList"></div>
+  <div class="assumption-note" id="assumptionNote">Projected from flat monthly contribution — no market growth assumed</div>
 
   <div class="footer"><span>MAXIMUS · FIRE @ 55</span><span id="dragonTag">SCORPIO DRAGON</span></div>
 </div>
@@ -382,12 +454,14 @@
   const remVal = document.getElementById('remVal');
   const nextMilestone = document.getElementById('nextMilestone');
   const curInput = document.getElementById('curInput');
+  const monthlyInput = document.getElementById('monthlyInput');
   const saveNote = document.getElementById('saveNote');
   const statusTxt = document.getElementById('statusTxt');
+  const milestonesList = document.getElementById('milestonesList');
 
   ringFg.setAttribute('stroke-dasharray', CIRC.toFixed(2));
 
-  const MILESTONE_PCTS = [25, 50, 75];
+  const MILESTONE_PCTS = [10,20,30,40,50,60,70,80,90];
   MILESTONE_PCTS.forEach(p=>{
     const angle = (p/100) * 2 * Math.PI - Math.PI/2;
     const x = CX + R * Math.cos(angle);
@@ -403,8 +477,41 @@
   function fmt(n){
     return '$' + Math.round(n).toLocaleString('en-US');
   }
+  function fmtK(n){
+    return '$' + Math.round(n/1000) + 'K';
+  }
+  const MONTH_FMT = new Intl.DateTimeFormat('en-US', { month:'short', year:'numeric' });
 
-  function render(current){
+  function renderMilestoneDates(current, monthly){
+    milestonesList.innerHTML = '';
+    const now = new Date();
+    for(let target = 10000; target <= 100000; target += 10000){
+      const row = document.createElement('div');
+      row.className = 'm-row';
+      const amt = document.createElement('span');
+      amt.className = 'm-amt';
+      amt.textContent = fmtK(target);
+      const date = document.createElement('span');
+      date.className = 'm-date';
+
+      if(current >= target){
+        row.classList.add('reached');
+        date.textContent = 'reached';
+      } else if(monthly > 0){
+        const monthsNeeded = Math.ceil((target - current) / monthly);
+        const projected = new Date(now.getFullYear(), now.getMonth() + monthsNeeded, 1);
+        date.textContent = MONTH_FMT.format(projected);
+      } else {
+        date.textContent = 'add $/mo';
+        date.classList.add('pending');
+      }
+      row.appendChild(amt);
+      row.appendChild(date);
+      milestonesList.appendChild(row);
+    }
+  }
+
+  function render(current, monthly){
     const target = 100000;
     const pct = Math.max(0, Math.min(100, (current / target) * 100));
     const offset = CIRC - (pct / 100) * CIRC;
@@ -425,13 +532,15 @@
 
     const nextM = MILESTONE_PCTS.find(m => pct < m);
     nextMilestone.textContent = nextM ? fmt(nextM/100*target) : fmt(target);
+
+    renderMilestoneDates(current, monthly);
   }
 
   let saveTimer;
-  async function persist(value){
+  async function persist(value, monthly){
     saveNote.textContent = 'saving…';
     try{
-      await window.storage.set('road-to-100k:net-worth', JSON.stringify({ value, updated: Date.now() }));
+      await window.storage.set('road-to-100k:net-worth', JSON.stringify({ value, monthly, updated: Date.now() }));
       saveNote.textContent = 'saved';
       statusTxt.textContent = 'LIVE';
     }catch(e){
@@ -441,35 +550,46 @@
     saveTimer = setTimeout(()=>{ saveNote.textContent = ''; }, 1800);
   }
 
-  curInput.addEventListener('input', (e)=>{
-    const v = parseFloat(e.target.value) || 0;
-    render(v);
-    persist(v);
-  });
-  curInput.addEventListener('change', (e)=>{
-    const v = parseFloat(e.target.value) || 0;
-    render(v);
-    persist(v);
-  });
+  function currentValues(){
+    return {
+      v: parseFloat(curInput.value) || 0,
+      m: parseFloat(monthlyInput.value) || 0
+    };
+  }
+
+  function onEdit(){
+    const { v, m } = currentValues();
+    render(v, m);
+    persist(v, m);
+  }
+
+  curInput.addEventListener('input', onEdit);
+  curInput.addEventListener('change', onEdit);
+  monthlyInput.addEventListener('input', onEdit);
+  monthlyInput.addEventListener('change', onEdit);
 
   async function init(){
-    let storedVal = 0;
+    let stored = { value: 0, monthly: 0 };
     try{
       const res = await window.storage.get('road-to-100k:net-worth');
       if(res && res.value){
-        storedVal = JSON.parse(res.value).value || 0;
+        const parsed = JSON.parse(res.value);
+        stored.value = parsed.value || 0;
+        stored.monthly = parsed.monthly || 0;
       }
     }catch(e){ /* no saved value yet */ }
 
-    // Mobile browsers can silently restore a typed value into the input
-    // on reload without firing an 'input' event — reconcile against that
-    // instead of trusting only what we wrote to storage.
-    const autofilled = curInput.value !== '' ? parseFloat(curInput.value) : NaN;
-    const finalVal = !isNaN(autofilled) ? autofilled : storedVal;
+    // Mobile browsers can silently restore typed values into inputs on
+    // reload without firing an 'input' event — reconcile against that.
+    const autoV = curInput.value !== '' ? parseFloat(curInput.value) : NaN;
+    const autoM = monthlyInput.value !== '' ? parseFloat(monthlyInput.value) : NaN;
+    const finalV = !isNaN(autoV) ? autoV : stored.value;
+    const finalM = !isNaN(autoM) ? autoM : stored.monthly;
 
-    curInput.value = finalVal || '';
-    render(finalVal);
-    if(finalVal !== storedVal) persist(finalVal);
+    curInput.value = finalV || '';
+    monthlyInput.value = finalM || '';
+    render(finalV, finalM);
+    if(finalV !== stored.value || finalM !== stored.monthly) persist(finalV, finalM);
   }
   window.addEventListener('pageshow', init);
   init();
