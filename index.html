@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>ROAD TO 100K — VAULT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -442,6 +443,28 @@
   }
   requestAnimationFrame(drawStars);
 
+  /* ---------- storage adapter ----------
+     window.storage only exists inside Claude.ai artifacts. Once this file
+     is self-hosted (e.g. GitHub Pages), it's undefined — fall back to
+     localStorage so saving still works there. */
+  const store = {
+    async get(key){
+      if(window.storage){
+        try{ return await window.storage.get(key); }
+        catch(e){ return null; }
+      }
+      const raw = localStorage.getItem(key);
+      return raw !== null ? { value: raw } : null;
+    },
+    async set(key, value){
+      if(window.storage){
+        return window.storage.set(key, value);
+      }
+      localStorage.setItem(key, value);
+      return { value };
+    }
+  };
+
   /* ---------- ring / progress ---------- */
   const R = 98;
   const CX = 113, CY = 113;
@@ -540,7 +563,7 @@
   async function persist(value, monthly){
     saveNote.textContent = 'saving…';
     try{
-      await window.storage.set('road-to-100k:net-worth', JSON.stringify({ value, monthly, updated: Date.now() }));
+      await store.set('road-to-100k:net-worth', JSON.stringify({ value, monthly, updated: Date.now() }));
       saveNote.textContent = 'saved';
       statusTxt.textContent = 'LIVE';
     }catch(e){
@@ -571,7 +594,7 @@
   async function init(){
     let stored = { value: 0, monthly: 0 };
     try{
-      const res = await window.storage.get('road-to-100k:net-worth');
+      const res = await store.get('road-to-100k:net-worth');
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         stored.value = parsed.value || 0;
