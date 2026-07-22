@@ -240,10 +240,25 @@
   .input-row input::-webkit-outer-spin-button,
   .input-row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
   .input-row input[type=number]{-moz-appearance:textfield; appearance:textfield;}
+  .input-row .field.pct::before{content:none;}
+  .input-row .field.pct::after{
+    content:'%';
+    position:absolute;right:12px;top:50%;transform:translateY(-50%);
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:#d4af37;
+    pointer-events:none;
+  }
+  .input-row .field.pct input{padding:9px 24px 9px 10px;}
   .save-note{
     font-family:'JetBrains Mono',monospace;
     font-size:8.5px;color:#555;text-align:right;
     min-height:11px;letter-spacing:.05em;
+  }
+  .assumption-note{
+    font-family:'JetBrains Mono',monospace;
+    font-size:8px;color:#4a4a4a;text-align:center;
+    letter-spacing:.03em;line-height:1.5;
+    max-width:360px;margin:12px auto 0;
+    padding:0 18px;
   }
 
   /* ============ CARD 1 — IGNITION — $100K ============ */
@@ -552,8 +567,13 @@
       <label for="monthlyInput">Monthly Add</label>
       <div class="field"><input type="text" inputmode="decimal" id="monthlyInput" placeholder="800"></div>
     </div>
+    <div class="input-row">
+      <label for="growthInput">Growth Rate</label>
+      <div class="field pct"><input type="text" inputmode="decimal" id="growthInput" placeholder="8"></div>
+    </div>
     <div class="save-note" id="saveNote">&nbsp;</div>
   </div>
+  <div class="assumption-note" id="assumptionNote">Arrival dates compound your growth rate monthly — a projection, not a guarantee</div>
 </div>
 
 <script>
@@ -599,6 +619,26 @@
   /* ---------- formatting ---------- */
   function fmt(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
   const MONTH_FMT = new Intl.DateTimeFormat('en-US', { month:'short', year:'numeric' });
+
+  // Solves for months needed to reach target, compounding growth monthly
+  // and adding a flat monthly contribution (annuity). Falls back to a
+  // simple linear model if growth rate is 0.
+  function monthsToTarget(current, monthly, target, annualPct){
+    if(current >= target) return 0;
+    const r = (annualPct || 0) / 100 / 12;
+    if(r <= 0){
+      if(monthly <= 0) return Infinity;
+      return Math.ceil((target - current) / monthly);
+    }
+    if(current <= 0 && monthly <= 0) return Infinity;
+    const maxMonths = 1200; // 100-year cap
+    for(let n = 0; n <= maxMonths; n++){
+      const growthFactor = Math.pow(1 + r, n);
+      const fv = current * growthFactor + monthly * ((growthFactor - 1) / r);
+      if(fv >= target) return n;
+    }
+    return Infinity;
+  }
 
   function fitHero(el, container, maxPct){
     const available = container.clientWidth * maxPct;
@@ -663,7 +703,7 @@
 
   const RENDERERS = { ign: renderIgnition, mom: renderMomentum, asc: renderAscension, apex: renderApex };
 
-  function renderCard(key, current, monthly){
+  function renderCard(key, current, monthly, growthPct){
     const target = cards[key].target;
     const pct = Math.max(0, Math.min(100, current/target*100));
     const heroEl = document.getElementById('hero-'+key);
@@ -675,25 +715,28 @@
     const dateEl = document.getElementById('date-'+key);
     if(current >= target){
       dateEl.textContent = 'reached';
-    } else if(monthly > 0){
-      const monthsNeeded = Math.ceil((target - current) / monthly);
-      const now = new Date();
-      const projected = new Date(now.getFullYear(), now.getMonth() + monthsNeeded, 1);
-      dateEl.textContent = MONTH_FMT.format(projected);
     } else {
-      dateEl.textContent = 'add $/mo';
+      const monthsNeeded = monthsToTarget(current, monthly, target, growthPct);
+      if(!isFinite(monthsNeeded)){
+        dateEl.textContent = monthly > 0 || growthPct > 0 ? '>100 yrs' : 'add $/mo';
+      } else {
+        const now = new Date();
+        const projected = new Date(now.getFullYear(), now.getMonth() + monthsNeeded, 1);
+        dateEl.textContent = MONTH_FMT.format(projected);
+      }
     }
 
     RENDERERS[key](current);
   }
 
-  function renderAll(current, monthly){
-    Object.keys(cards).forEach(key => renderCard(key, current, monthly));
+  function renderAll(current, monthly, growthPct){
+    Object.keys(cards).forEach(key => renderCard(key, current, monthly, growthPct));
   }
 
   /* ---------- inputs: parse, sync, persist ---------- */
   const curInput = document.getElementById('curInput');
   const monthlyInput = document.getElementById('monthlyInput');
+  const growthInput = document.getElementById('growthInput');
   const saveNote = document.getElementById('saveNote');
 
   function parseNum(str){
@@ -703,10 +746,10 @@
   }
 
   let saveTimer;
-  async function persist(value, monthly){
+  async function persist(value, monthly, growth){
     saveNote.textContent = 'saving…';
     try{
-      await store.set('vault-milestones:inputs', JSON.stringify({ value, monthly, updated: Date.now() }));
+      await store.set('vault-milestones:inputs', JSON.stringify({ value, monthly, growth, updated: Date.now() }));
       saveNote.textContent = 'saved';
     }catch(e){
       saveNote.textContent = 'storage unavailable — session only';
@@ -715,19 +758,21 @@
     saveTimer = setTimeout(()=>{ saveNote.textContent = ''; }, 1600);
   }
 
-  let lastV = null, lastM = null;
+  let lastV = null, lastM = null, lastG = null;
   function syncFromFields(){
     const v = parseNum(curInput.value);
     const m = parseNum(monthlyInput.value);
-    if(v !== lastV || m !== lastM){
-      lastV = v; lastM = m;
-      renderAll(v, m);
-      persist(v, m);
+    const g = parseNum(growthInput.value);
+    if(v !== lastV || m !== lastM || g !== lastG){
+      lastV = v; lastM = m; lastG = g;
+      renderAll(v, m, g);
+      persist(v, m, g);
     }
   }
   ['input','change','keyup'].forEach(evt=>{
     curInput.addEventListener(evt, syncFromFields);
     monthlyInput.addEventListener(evt, syncFromFields);
+    growthInput.addEventListener(evt, syncFromFields);
   });
   setInterval(syncFromFields, 400); // fallback for browsers with unreliable input events
 
@@ -751,26 +796,30 @@
 
   /* ---------- init ---------- */
   async function init(){
-    let stored = { value: 0, monthly: 0 };
+    let stored = { value: 0, monthly: 0, growth: 8 };
     try{
       const res = await store.get('vault-milestones:inputs');
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         stored.value = parsed.value || 0;
         stored.monthly = parsed.monthly || 0;
+        stored.growth = (parsed.growth === 0 || parsed.growth) ? parsed.growth : 8;
       }
     }catch(e){ /* nothing saved yet */ }
 
     const autoV = curInput.value !== '' ? parseNum(curInput.value) : NaN;
     const autoM = monthlyInput.value !== '' ? parseNum(monthlyInput.value) : NaN;
+    const autoG = growthInput.value !== '' ? parseNum(growthInput.value) : NaN;
     const finalV = !isNaN(autoV) && curInput.value !== '' ? autoV : stored.value;
     const finalM = !isNaN(autoM) && monthlyInput.value !== '' ? autoM : stored.monthly;
+    const finalG = !isNaN(autoG) && growthInput.value !== '' ? autoG : stored.growth;
 
     curInput.value = finalV || '';
     monthlyInput.value = finalM || '';
-    lastV = finalV; lastM = finalM;
-    renderAll(finalV, finalM);
-    if(finalV !== stored.value || finalM !== stored.monthly) persist(finalV, finalM);
+    growthInput.value = finalG || finalG === 0 ? finalG : 8;
+    lastV = finalV; lastM = finalM; lastG = finalG;
+    renderAll(finalV, finalM, finalG);
+    if(finalV !== stored.value || finalM !== stored.monthly || finalG !== stored.growth) persist(finalV, finalM, finalG);
   }
   init();
 </script>
